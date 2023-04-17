@@ -18,9 +18,9 @@ class BaseConfig:
     MAIL_SERVER = "smtp.qq.com"
     MAIL_USE_SSL = True
     MAIL_PORT = 465
-    MAIL_USERNAME = "827407170@qq.com"
-    MAIL_PASSWORD = "jspxsaeoeoczbfeg"
-    MAIL_DEFAULT_SENDER = "827407170@qq.com"
+    MAIL_USERNAME = "username@mail.com"
+    MAIL_PASSWORD = "authorization"
+    MAIL_DEFAULT_SENDER = "username@mail.com"
 
 
 class DevelopmentConfig(BaseConfig):
