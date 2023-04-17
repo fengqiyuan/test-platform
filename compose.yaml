@@ -1,0 +1,72 @@
+services:
+  test_platform:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: test_platform
+    container_name: test_platform
+    stop_signal: SIGINT
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      FLASK_APP: app.py
+      FLASK_ENV: test
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --silent --fail localhost:6000/health-check || exit 1" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - data:/home/log
+    networks:
+      - backnet
+  db:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      TZ: Asia/Shanghai
+    healthcheck:
+      test: [ 'CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 --password=123456 --silent' ]
+      interval: 3s
+      retries: 5
+      start_period: 30s
+    command: [ 'mysqld','--default-time-zone=Asia/Shanghai' ]
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - backnet
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning # --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - redis_data:/data
+    networks:
+      - backnet
+volumes:
+  data:
+  db_data:
+  redis_data:
+networks:
+  backnet:
+
+
+

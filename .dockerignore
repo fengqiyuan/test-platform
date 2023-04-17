@@ -1,0 +1,6 @@
+# comment
+*/temp*
+*/*/temp*
+migrations
+*.md
+!README.md
